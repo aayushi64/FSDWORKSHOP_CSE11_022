@@ -1,0 +1,24 @@
+// frontend user pov se eg. advertisement
+//backend main check krta hai ki user ke liye desired options ahi ya nhi  eg . availabolity of product
+// server cite and usercite prgm 
+// javascript is event driven single threaded 
+// simngle threaded hai toh synchronous problem is blocking ek krega toh dura rukega 
+// mtlb user ka intraction khrb /
+// ise theekl krene ke liye evetloop jise sare chale
+// isliye iske andar do phase eg synchronous or assynchronous 
+// jo heavy execution hoga voh asyn 
+// mtlb asynchronous main hum backend ya bg main chlta rehta ahi jese hi sychronous hua vese hi asynchronous
+// promise ye sab asynchromous main help krti hai 
+// domevents main javascript kaam krta hai or function domeveents se fire hota ahai 
+// mtlb agr hum kuch option click kre toh uske bd ky ho (loop)
+// jese dom kam krta ahi vese hi uska mimicary bnane ke liye hum domevent bnate hai 
+// funtn ko jab hum cll krenge toh add remove or dispatch milega
+//
+
+
+CHAT GPT 
+Why import fs from "node:fs";?
+fs stands for File System.
+It’s a built‑in Node.js module that lets you interact with files and
+ directories on your computer.
+Without importing fs, Node.js doesn’t know how to read, write, or manage files.
