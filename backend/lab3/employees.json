@@ -8,19 +8,19 @@
   {
     "id": 102,
     "name": "Pihu",
-    "email": "rohan@example.com",
+    "email": "pihu@example.com",
     "department": "HR"
   },
   {
     "id": 103,
     "name": "Aditi",
-    "email": "priya@example.com",
+    "email": "aditi@example.com",
     "department": "Finance"
   },
   {
     "id": 104,
     "name": "Ujjwal",
-    "email": "amit@example.com",
+    "email": "ujjwal@example.com",
     "department": "Marketing"
   }
 ]

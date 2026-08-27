@@ -1,40 +1,63 @@
 import http from 'http';
 import fs from 'fs';
-
 const port = 3000;
+const filePath = "employees.json";
 
-// Array of employee objects
-const employees = [
-    { id: 101, name: "Arisha", email: "arisha@example.com", department: "IT" },
-    { id: 102, name: "Pihu", email: "pihu@example.com", department: "HR" },
-    { id: 103, name: "Aditi", email: "aditi@example.com", department: "Finance" },
-    { id: 104, name: "Ujjwal", email: "ujjwal@example.com", department: "Marketing" }
-];
-
-// Write employees data into a file once at startup
-fs.writeFileSync("employees.json", JSON.stringify(employees, null, 2));
+// Initialize file if not exists
+if (!fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, JSON.stringify([], null, 2));
+}
 
 const server = http.createServer((req, res) => {
     const url = req.url;
     const method = req.method;
 
-    if (url === "/file" && method === "GET") {
-        // Return the file itself
-        res.setHeader("Content-Type", "application/json");
-        const readStream = fs.createReadStream("employees.json");
-        readStream.pipe(res);
+    res.setHeader("Content-Type", "application/json");
+
+    if (url === "/employee" && method === "POST") {
+        let body = "";
+
+        // Collect chunks of data
+        req.on("data", chunk => {
+            body += chunk;
+        });
+
+        req.on("end", () => {
+            try {
+                // Parse JSON body
+                const parsedData = JSON.parse(body);
+
+                // Create an object from parsed data (one by one)
+                const newEmployee = {
+                    id: parsedData.id,
+                    name: parsedData.name,
+                    email: parsedData.email,
+                    department: parsedData.department
+                };
+
+                // Read existing file
+                const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+
+                // Add new employee
+                data.push(newEmployee);
+
+                // Save back to file
+                fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+
+                res.statusCode = 201;
+                res.end(JSON.stringify({ message: "Employee saved successfully", employee: newEmployee }));
+            } catch (err) {
+                res.statusCode = 400;
+                res.end(JSON.stringify({ error: "Invalid JSON data" }));
+            }
+        });
     }
-    else if (url === "/msg" && method === "GET") {
-        res.setHeader("Content-Type", "application/json");
-        res.end(JSON.stringify({ message: "Message received" }));
-    }
-    else if (url === "/hello" && method === "GET") {
-        res.setHeader("Content-Type", "application/json");
-        res.end(JSON.stringify({ message: "Hello World" }));
+    else if (url === "/employees" && method === "GET") {
+        const data = fs.readFileSync(filePath, "utf-8");
+        res.end(data);
     }
     else {
         res.statusCode = 404;
-        res.setHeader("Content-Type", "application/json");
         res.end(JSON.stringify({ error: "Page not found" }));
     }
 });
