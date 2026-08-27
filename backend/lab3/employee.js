@@ -1,4 +1,5 @@
 import http from 'http';
+import fs from 'fs';
 
 const port = 3000;
 
@@ -10,37 +11,30 @@ const employees = [
     { id: 104, name: "Ujjwal", email: "amit@example.com", department: "Marketing" }
 ];
 
+// Write employees data into a file once at startup
+fs.writeFileSync("employees.json", JSON.stringify(employees, null, 2));
+
 const server = http.createServer((req, res) => {
     const url = req.url;
     const method = req.method;
 
-    // Set response type to JSON for data endpoints
-    res.setHeader("Content-Type", "application/json");
-
-    if (url === "/msg" && method === "GET") {
+    if (url === "/file" && method === "GET") {
+        // Return the file itself
+        res.setHeader("Content-Type", "application/json");
+        const readStream = fs.createReadStream("employees.json");
+        readStream.pipe(res);
+    }
+    else if (url === "/msg" && method === "GET") {
+        res.setHeader("Content-Type", "application/json");
         res.end(JSON.stringify({ message: "Message received" }));
     }
     else if (url === "/hello" && method === "GET") {
+        res.setHeader("Content-Type", "application/json");
         res.end(JSON.stringify({ message: "Hello World" }));
-    }
-    else if (url === "/employees" && method === "GET") {
-        // Send full employee list
-        res.end(JSON.stringify(employees));
-    }
-    else if (url.startsWith("/employee/") && method === "GET") {
-        // Extract ID from URL
-        const empId = parseInt(url.split("/")[2]);
-        const employee = employees.find(emp => emp.id === empId);
-
-        if (employee) {
-            res.end(JSON.stringify(employee));
-        } else {
-            res.statusCode = 404;
-            res.end(JSON.stringify({ error: "Employee not found" }));
-        }
     }
     else {
         res.statusCode = 404;
+        res.setHeader("Content-Type", "application/json");
         res.end(JSON.stringify({ error: "Page not found" }));
     }
 });
