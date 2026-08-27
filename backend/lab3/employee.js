@@ -6,9 +6,9 @@ const port = 3000;
 // Array of employee objects
 const employees = [
     { id: 101, name: "Arisha", email: "arisha@example.com", department: "IT" },
-    { id: 102, name: "Pihu", email: "rohan@example.com", department: "HR" },
-    { id: 103, name: "Aditi", email: "priya@example.com", department: "Finance" },
-    { id: 104, name: "Ujjwal", email: "amit@example.com", department: "Marketing" }
+    { id: 102, name: "Pihu", email: "pihu@example.com", department: "HR" },
+    { id: 103, name: "Aditi", email: "aditi@example.com", department: "Finance" },
+    { id: 104, name: "Ujjwal", email: "ujjwal@example.com", department: "Marketing" }
 ];
 
 // Write employees data into a file once at startup
