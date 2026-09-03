@@ -1,5 +1,6 @@
 import http from 'http';
 import fs from 'fs';
+
 const port = 3000;
 const filePath = "employees.json";
 
@@ -17,17 +18,14 @@ const server = http.createServer((req, res) => {
     if (url === "/employee" && method === "POST") {
         let body = "";
 
-        // Collect chunks of data
         req.on("data", chunk => {
             body += chunk;
         });
 
         req.on("end", () => {
             try {
-                // Parse JSON body
                 const parsedData = JSON.parse(body);
 
-                // Create an object from parsed data (one by one)
                 const newEmployee = {
                     id: parsedData.id,
                     name: parsedData.name,
@@ -35,13 +33,8 @@ const server = http.createServer((req, res) => {
                     department: parsedData.department
                 };
 
-                // Read existing file
                 const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-
-                // Add new employee
                 data.push(newEmployee);
-
-                // Save back to file
                 fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
                 res.statusCode = 201;
@@ -55,6 +48,21 @@ const server = http.createServer((req, res) => {
     else if (url === "/employees" && method === "GET") {
         const data = fs.readFileSync(filePath, "utf-8");
         res.end(data);
+    }
+    else if (url.startsWith("/employee/") && method === "GET") {
+        // Extract ID from URL → /employee/101
+        const empId = parseInt(url.split("/")[2]);   // get ID
+        console.log("Requested ID:", empId);        // debug log
+
+        const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+        const employee = data.find(emp => emp.id === empId); // find employee
+
+        if (employee) {
+            res.end(JSON.stringify(employee));
+        } else {
+            res.statusCode = 404;
+            res.end(JSON.stringify({ error: "Employee not found" }));
+        }
     }
     else {
         res.statusCode = 404;
