@@ -61,7 +61,7 @@ const server = http.createServer((req, res) => {
         }
     }
 
-    // UPDATE (PUT)
+    // UPDATE (PUT using splice)
     else if (url.startsWith("/employees/") && method === "PUT") {
         const empId = parseInt(url.split("/")[2]);
         let body = "";
@@ -76,7 +76,7 @@ const server = http.createServer((req, res) => {
                     res.statusCode = 404;
                     res.end(JSON.stringify({ error: "Employee not found" }));
                 } else {
-                    data[empIndex] = { id: empId, ...parsedData };
+                    data.splice(empIndex, 1, { id: empId, ...parsedData });
                     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
                     res.end(JSON.stringify({ message: "Employee updated successfully", employee: data[empIndex] }));
                 }
@@ -87,17 +87,18 @@ const server = http.createServer((req, res) => {
         });
     }
 
-    // DELETE
+    // DELETE (using splice)
     else if (url.startsWith("/employees/") && method === "DELETE") {
         const empId = parseInt(url.split("/")[2]);
         const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-        const newData = data.filter(e => e.id !== empId);
+        const empIndex = data.findIndex(e => e.id === empId);
 
-        if (newData.length === data.length) {
+        if (empIndex === -1) {
             res.statusCode = 404;
             res.end(JSON.stringify({ error: "Employee not found" }));
         } else {
-            fs.writeFileSync(filePath, JSON.stringify(newData, null, 2));
+            data.splice(empIndex, 1); // remove employee at index
+            fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
             res.end(JSON.stringify({ message: "Employee deleted successfully" }));
         }
     }
