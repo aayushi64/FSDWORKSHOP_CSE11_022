@@ -23,4 +23,11 @@ It’s a built‑in Node.js module that lets you interact with files and
  directories on your computer.
 Without importing fs, Node.js doesn’t know how to read, write, or manage files.
 // postman api ko test krne ko hai 
-//
+
+
+os liberay import kr ek hum os ki info mang skte ahi 
+like processor and window and etc
+
+JSON.stringify() is what you use to convert a JavaScript
+ object/array into a JSON string before saving or sending it in the response.
+

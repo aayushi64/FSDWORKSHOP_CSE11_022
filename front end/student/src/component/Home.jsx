@@ -1,13 +1,11 @@
 import React from 'react'
-import netflix from '../assets/netflix.png'
-
-const Home = () => {
+import girls from "../assets/girls.jpg";
+export const Home = () => {
   return (
     <div>
-      <h1>hey arisha</h1>
-      <img src={netflix} alt="Netflix Logo" />
+        <h2>Welcome to home page</h2>
+        <img src={girls} alt="girls"/>
     </div>
   )
 }
-
 export default Home;
