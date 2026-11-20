@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./db.js";
+import Student from "./models/student.js";
 
 dotenv.config();
 connectDB();
@@ -9,7 +10,7 @@ connectDB();
 const app = express();
 
 app.use(cors());
-app.use(express.json());n
+app.use(express.json());
 
 const port = process.env.PORT || 3000;
 
@@ -21,7 +22,7 @@ app.use((req, res, next) => {
         const size = res.getHeader("Content-Length") || 0;
 
         console.log(
-            `${req.method} ${req.originalUrl} → ${res.statusCode} | ${size} bytes | ${duration} ms`
+            `${req.method} ${req.originalUrl} -> ${res.statusCode} | ${size} bytes | ${duration} ms`
         );
     });
 
@@ -36,7 +37,9 @@ let userData = [
 ];
 
 app.get("/", (req, res) => {
-    res.status(200).json({ message: "Welcome to user API" });
+    res.status(200).json({
+        message: "Welcome to User API"
+    });
 });
 
 app.get("/user", (req, res) => {
@@ -91,8 +94,6 @@ app.post("/create", (req, res) => {
         });
 
     } catch (error) {
-        console.log(error.message);
-
         res.status(500).json({
             error: "Internal Server Error"
         });
@@ -137,6 +138,44 @@ app.delete("/user/:id", (req, res) => {
     res.status(200).json({
         message: "User deleted successfully"
     });
+});
+
+// MongoDB Test Routes
+
+app.post("/test.db", async (req, res) => {
+    try {
+        const student = await Student.create({
+            name: "aayushi",
+            email: "aayushi@gmail.com",
+            phone: "7827536087"
+        });
+
+        res.status(201).json({
+            message: "Student created successfully",
+            data: student
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            error: error.message
+        });
+    }
+});
+
+app.get("/test.db", async (req, res) => {
+    try {
+        const students = await Student.find();
+
+        res.status(200).json({
+            message: "Students fetched successfully",
+            data: students
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            error: error.message
+        });
+    }
 });
 
 app.listen(port, () => {
